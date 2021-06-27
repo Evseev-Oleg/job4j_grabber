@@ -15,39 +15,41 @@ import static org.quartz.SimpleScheduleBuilder.*;
 public class AlertRabbit {
 
 
-    public String readProperties(String way, String key) {
-        String res = null;
+    private Properties readProperties() {
         Properties property = new Properties();
-        try (FileInputStream fis = new FileInputStream(way)) {
+        try (FileInputStream fis = new FileInputStream("src/main/resources/rabbit.properties")) {
             property.load(fis);
-            res = property.getProperty(key);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return res;
+        return property;
     }
 
-    private Connection getConnection(String way) throws SQLException,
+    private Connection getConnection(Properties properties) throws SQLException,
             ClassNotFoundException {
-        Class.forName(readProperties(way, "driver-class-name"));
+        Class.forName(properties.getProperty("driver-class-name"));
         return DriverManager.getConnection(
-                readProperties(way, "url"),
-                readProperties(way, "username"),
-                readProperties(way, "password")
+                properties.getProperty("url"),
+                properties.getProperty("username"),
+                properties.getProperty("password")
         );
     }
 
     public static void main(String[] args) {
-        String way = "src/main/resources/rabbit.properties";
         AlertRabbit alertRabbit = new AlertRabbit();
-        try  (Connection connection = alertRabbit.getConnection(way)) {
+        Properties properties = alertRabbit.readProperties();
+        try (Connection connection = alertRabbit.getConnection(properties)) {
             Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
             scheduler.start();
-            JobDetail job = newJob(Rabbit.class).build();
+            JobDataMap data = new JobDataMap();
+            data.put("connection", connection);
+            JobDetail job = newJob(Rabbit.class)
+                    .usingJobData(data)
+                    .build();
             SimpleScheduleBuilder times = simpleSchedule()
                     .withIntervalInSeconds(Integer.parseInt
-                            (alertRabbit.readProperties(
-                                    way, "rabbit.interval")))
+                            (properties.getProperty(
+                                    "rabbit.interval")))
                     .repeatForever();
             Trigger trigger = newTrigger()
                     .startNow()

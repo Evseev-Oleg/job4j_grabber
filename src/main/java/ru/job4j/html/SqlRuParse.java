@@ -15,6 +15,9 @@ public class SqlRuParse {
             System.out.println(href1.text());
             Element data = td.parent().child(5);
             System.out.println(data.text());
+            if (Integer.parseInt(td.text()) > 5) {
+                break;
+            }
         }
     }
 }

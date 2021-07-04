@@ -6,23 +6,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SqlRuDateTimeParser implements DateTimeParser {
+    private static final Map<String, Month> parseMonth = new HashMap<>();
+
     @Override
     public LocalDateTime parse(String parse) {
         String[] parseData = parse.split(" ");
+        parseMonth.put("янв", Month.JANUARY);
+        parseMonth.put("фев", Month.FEBRUARY);
+        parseMonth.put("мар", Month.MARCH);
+        parseMonth.put("апр", Month.APRIL);
+        parseMonth.put("май", Month.MAY);
+        parseMonth.put("июн", Month.JUNE);
+        parseMonth.put("июл", Month.JULY);
+        parseMonth.put("авг", Month.AUGUST);
+        parseMonth.put("сен", Month.SEPTEMBER);
+        parseMonth.put("окт", Month.OCTOBER);
+        parseMonth.put("ноя", Month.NOVEMBER);
+        parseMonth.put("дек", Month.DECEMBER);
         if (parseData.length == 4) {
-            Map<String, Month> parseMonth = new HashMap<>();
-            parseMonth.put("янв", Month.JANUARY);
-            parseMonth.put("фев", Month.FEBRUARY);
-            parseMonth.put("мар", Month.MARCH);
-            parseMonth.put("апр", Month.APRIL);
-            parseMonth.put("май", Month.MAY);
-            parseMonth.put("июн", Month.JUNE);
-            parseMonth.put("июл", Month.JULY);
-            parseMonth.put("авг", Month.AUGUST);
-            parseMonth.put("сен", Month.SEPTEMBER);
-            parseMonth.put("окт", Month.OCTOBER);
-            parseMonth.put("ноя", Month.NOVEMBER);
-            parseMonth.put("дек", Month.DECEMBER);
             String yearFar = "20" + parseData[2].replace(
                     ",", "");
             Month monthFar = parseMonth.get(parseData[1]);

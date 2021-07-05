@@ -2,31 +2,30 @@ package ru.job4j.grabber.utils;
 
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.HashMap;
 import java.util.Map;
 
 public class SqlRuDateTimeParser implements DateTimeParser {
-    private static final Map<String, Month> parseMonth = new HashMap<>();
+    private static final Map<String, Month> MONTH_MAP =
+            Map.ofEntries(Map.entry("янв", Month.JANUARY),
+                    Map.entry("фев", Month.FEBRUARY),
+                    Map.entry("мар", Month.MARCH),
+                    Map.entry("апр", Month.APRIL),
+                    Map.entry("май", Month.MAY),
+                    Map.entry("июн", Month.JUNE),
+                    Map.entry("июл", Month.JULY),
+                    Map.entry("авг", Month.AUGUST),
+                    Map.entry("сен", Month.SEPTEMBER),
+                    Map.entry("окт", Month.OCTOBER),
+                    Map.entry("ноя", Month.NOVEMBER),
+                    Map.entry("дек", Month.DECEMBER));
 
     @Override
     public LocalDateTime parse(String parse) {
         String[] parseData = parse.split(" ");
-        parseMonth.put("янв", Month.JANUARY);
-        parseMonth.put("фев", Month.FEBRUARY);
-        parseMonth.put("мар", Month.MARCH);
-        parseMonth.put("апр", Month.APRIL);
-        parseMonth.put("май", Month.MAY);
-        parseMonth.put("июн", Month.JUNE);
-        parseMonth.put("июл", Month.JULY);
-        parseMonth.put("авг", Month.AUGUST);
-        parseMonth.put("сен", Month.SEPTEMBER);
-        parseMonth.put("окт", Month.OCTOBER);
-        parseMonth.put("ноя", Month.NOVEMBER);
-        parseMonth.put("дек", Month.DECEMBER);
         if (parseData.length == 4) {
             String yearFar = "20" + parseData[2].replace(
                     ",", "");
-            Month monthFar = parseMonth.get(parseData[1]);
+            Month monthFar = MONTH_MAP.get(parseData[1]);
             String dayFar = parseData[0];
             String[] parseTimeFar = parseData[3].split(":");
             int hourFar = Integer.parseInt(parseTimeFar[0]);

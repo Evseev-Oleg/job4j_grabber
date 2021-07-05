@@ -8,13 +8,17 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.Properties;
 
+
+
 import static org.quartz.JobBuilder.*;
 import static org.quartz.TriggerBuilder.*;
 import static org.quartz.SimpleScheduleBuilder.*;
 
 public class AlertRabbit {
-
-
+    /**
+     * Метод возвращает готовый Properties.
+     * @return property
+     */
     private Properties readProperties() {
         Properties property = new Properties();
         try (FileInputStream fis = new FileInputStream("src/main/resources/rabbit.properties")) {
@@ -25,6 +29,14 @@ public class AlertRabbit {
         return property;
     }
 
+    /**
+     * Метод возвращает соединение с конфигурацие для postgreSQL
+     *
+     * @param properties - properties.
+     * @return connection
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
     private Connection getConnection(Properties properties) throws SQLException,
             ClassNotFoundException {
         Class.forName(properties.getProperty("driver-class-name"));
@@ -55,6 +67,7 @@ public class AlertRabbit {
                     .startNow()
                     .withSchedule(times)
                     .build();
+
             Thread.sleep(10000);
             scheduler.shutdown();
             scheduler.scheduleJob(job, trigger);
@@ -64,9 +77,19 @@ public class AlertRabbit {
         }
     }
 
+    /**
+     * Внутренний статический класс показывает, как работает планировщик.
+     */
     public static class Rabbit implements Job {
+
+        /**
+         * Метод выполняет работу планировщика.
+         *
+         * @param context connection
+         */
         @Override
         public void execute(JobExecutionContext context) {
+
             Connection connection = (Connection) context.getJobDetail()
                     .getJobDataMap().get("connection");
             try (PreparedStatement statement = connection.prepareStatement(

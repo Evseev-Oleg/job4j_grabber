@@ -13,18 +13,10 @@ import java.io.IOException;
 
 public class SqlRuParse {
     public static void main(String[] args) throws Exception {
-        String url = "https://www.sql.ru/forum/job-offers/1";
-        Document doc = Jsoup.connect(url).get();
-        Elements table = doc.select(".sort_options");
-        Elements listPages = table.select("td[style=text-align:left]");
-        Elements links = listPages.select("a");
-        for (Element link : links) {
-            parseHtml(url);
-            url = link.attr("href");
-            System.out.println("Следующая страница: ======================================== " + link.text());
-            if (Integer.parseInt(link.text()) > 5) {
-                break;
-            }
+        String url = "https://www.sql.ru/forum/job-offers/";
+        for (int i = 1; i <= 5; i++) {
+            parseHtml(url + i);
+            System.out.println("Страница: ======================================== " + i);
         }
     }
 
@@ -32,7 +24,7 @@ public class SqlRuParse {
      * Метод парсит HTML страницу.
      *
      * @param url ссылка на страницу
-     * @throws IOException
+     * @throws IOException .
      */
     private static void parseHtml(String url) throws IOException {
         Document doc = Jsoup.connect(url).get();

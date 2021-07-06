@@ -9,7 +9,6 @@ import java.sql.*;
 import java.util.Properties;
 
 
-
 import static org.quartz.JobBuilder.*;
 import static org.quartz.TriggerBuilder.*;
 import static org.quartz.SimpleScheduleBuilder.*;
@@ -17,6 +16,7 @@ import static org.quartz.SimpleScheduleBuilder.*;
 public class AlertRabbit {
     /**
      * Метод возвращает готовый Properties.
+     *
      * @return property
      */
     private Properties readProperties() {
@@ -34,8 +34,8 @@ public class AlertRabbit {
      *
      * @param properties - properties.
      * @return connection
-     * @throws SQLException
-     * @throws ClassNotFoundException
+     * @throws  SQLException .
+     * @throws  ClassNotFoundException .
      */
     private Connection getConnection(Properties properties) throws SQLException,
             ClassNotFoundException {
@@ -68,9 +68,9 @@ public class AlertRabbit {
                     .withSchedule(times)
                     .build();
 
-            Thread.sleep(10000);
-            scheduler.shutdown();
             scheduler.scheduleJob(job, trigger);
+            Thread.sleep(5000);
+            scheduler.shutdown();
         } catch (SchedulerException | ClassNotFoundException
                 | SQLException | InterruptedException se) {
             se.printStackTrace();

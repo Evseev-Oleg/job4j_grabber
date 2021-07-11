@@ -8,8 +8,6 @@ import ru.job4j.Post;
 import ru.job4j.grabber.utils.SqlRuDateTimeParser;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,9 +15,17 @@ import java.util.List;
  * Класс показывает как распарсить HTML страницу используя JSOUP.
  */
 
-public class SqlRuParse {
+public class SqlRuParse implements Parse {
+
+
     public static void main(String[] args) throws Exception {
         String url = "https://www.sql.ru/forum/job-offers/";
+        SqlRuParse sqlRuParse = new SqlRuParse();
+        List<Post> postList = sqlRuParse.list(url);
+        for (Post pos : postList) {
+            System.out.println(pos.getCreated());
+        }
+
         for (int i = 1; i <= 5; i++) {
             System.out.println("Страница: ======================================== " + i);
             parseHtml(url + i);
@@ -44,29 +50,40 @@ public class SqlRuParse {
         }
     }
 
-
     /**
-     * метод парсит html страницу и записывает
-     * результат в List<Post>
+     * Метод загружает список всех Post
      *
-     * @param url ссылка на страницу
-     * @return возвращает лист сущностей Post
+     * @param link принимает строку - ссылку сайта
+     * @return возвращает лист сущностей
      * @throws IOException .
      */
-    public List<Post> createPost(String url) throws IOException {
-        SqlRuDateTimeParser sqlRuDateTimeParser = new SqlRuDateTimeParser();
-        List<Post> postList = new ArrayList<>();
-        Document doc = Jsoup.connect(url).get();
+    @Override
+    public List<Post> list(String link) throws IOException {
+        List<Post> listPost = new ArrayList<>();
+        Document doc = Jsoup.connect(link).get();
         Elements row = doc.select(".postslisttopic");
         for (Element td : row) {
             Element href = td.child(0);
-            Document doc1 = Jsoup.connect(href.attr("href")).get();
-            Elements vacancy = doc1.select(".messageHeader");
-            Elements textVacancy = doc1.select(".msgBody");
-            Element data = td.parent().child(5);
-            postList.add(new Post(vacancy.get(0).text(), textVacancy.get(1).text(),
-                    url, sqlRuDateTimeParser.parse(data.text())));
+            listPost.add(detail(href.attr("href")));
         }
-        return postList;
+        return listPost;
+    }
+
+    /**
+     * Метод загружает детали одного Post
+     *
+     * @param link принимает ссылку на пост
+     * @return возвращает сущность Post
+     * @throws IOException .
+     */
+    @Override
+    public Post detail(String link) throws IOException {
+        SqlRuDateTimeParser sqlRuDateTimeParser = new SqlRuDateTimeParser();
+        Document doc = Jsoup.connect(link).get();
+        String data = doc.select("td[class=msgFooter]").get(0).text();
+        Elements vacancy = doc.select(".messageHeader");
+        Elements textVacancy = doc.select(".msgBody");
+        return new Post(vacancy.get(0).text(), textVacancy.get(1).text(),
+                link, sqlRuDateTimeParser.parse(data));
     }
 }

@@ -4,6 +4,10 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Map;
 
+/**
+ * класс преобразующий дату полученную
+ * с сайта в нужный формат
+ */
 public class SqlRuDateTimeParser implements DateTimeParser {
     private static final Map<String, Month> MONTH_MAP =
             Map.ofEntries(Map.entry("янв", Month.JANUARY),
@@ -19,9 +23,15 @@ public class SqlRuDateTimeParser implements DateTimeParser {
                     Map.entry("ноя", Month.NOVEMBER),
                     Map.entry("дек", Month.DECEMBER));
 
+    /**
+     *
+     * @param pars строка полученная с сайта
+     * @return возвращает сформированную дату для БД
+     */
     @Override
-    public LocalDateTime parse(String parse) {
-        String[] parseData = parse.split(" ");
+    public LocalDateTime parse(String pars) {
+        String[] str = pars.split("\\[");
+        String[] parseData = str[0].split(" ");
         if (parseData.length == 4) {
             String yearFar = "20" + parseData[2].replace(
                     ",", "");

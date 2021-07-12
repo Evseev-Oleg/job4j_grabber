@@ -1,6 +1,6 @@
 package ru.job4j.html;
 
-import ru.job4j.Post;
+import ru.job4j.grabber.Post;
 
 import java.io.IOException;
 import java.util.List;

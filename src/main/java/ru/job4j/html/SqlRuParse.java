@@ -5,6 +5,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import ru.job4j.grabber.Post;
+import ru.job4j.grabber.utils.DateTimeParser;
 import ru.job4j.grabber.utils.SqlRuDateTimeParser;
 
 import java.io.IOException;
@@ -14,13 +15,16 @@ import java.util.List;
 /**
  * Класс показывает как распарсить HTML страницу используя JSOUP.
  */
-
 public class SqlRuParse implements Parse {
+    private final DateTimeParser dateTimeParser;
 
+    public SqlRuParse(DateTimeParser dateTimeParser) {
+        this.dateTimeParser = dateTimeParser;
+    }
 
     public static void main(String[] args) throws Exception {
         String url = "https://www.sql.ru/forum/job-offers/";
-        SqlRuParse sqlRuParse = new SqlRuParse();
+        SqlRuParse sqlRuParse = new SqlRuParse(new SqlRuDateTimeParser());
         List<Post> postList = sqlRuParse.list(url);
         for (Post pos : postList) {
             System.out.println(pos.getCreated());
@@ -78,12 +82,11 @@ public class SqlRuParse implements Parse {
      */
     @Override
     public Post detail(String link) throws IOException {
-        SqlRuDateTimeParser sqlRuDateTimeParser = new SqlRuDateTimeParser();
         Document doc = Jsoup.connect(link).get();
         String data = doc.select("td[class=msgFooter]").get(0).text();
         Elements vacancy = doc.select(".messageHeader");
         Elements textVacancy = doc.select(".msgBody");
         return new Post(vacancy.get(0).text(), textVacancy.get(1).text(),
-                link, sqlRuDateTimeParser.parse(data));
+                link, dateTimeParser.parse(data));
     }
 }

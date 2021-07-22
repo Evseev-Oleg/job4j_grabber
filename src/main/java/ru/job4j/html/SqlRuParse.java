@@ -16,7 +16,10 @@ import java.util.List;
  * Класс показывает как распарсить HTML страницу используя JSOUP.
  */
 public class SqlRuParse implements Parse {
-    private final DateTimeParser dateTimeParser;
+    private DateTimeParser dateTimeParser;
+
+    public SqlRuParse() {
+    }
 
     public SqlRuParse(DateTimeParser dateTimeParser) {
         this.dateTimeParser = dateTimeParser;
@@ -68,7 +71,10 @@ public class SqlRuParse implements Parse {
         Elements row = doc.select(".postslisttopic");
         for (Element td : row) {
             Element href = td.child(0);
-            listPost.add(detail(href.attr("href")));
+            Post post = detail(href.attr("href"));
+            if(post.getTitle().contains("Java")) {
+                listPost.add(post);
+            }
         }
         return listPost;
     }

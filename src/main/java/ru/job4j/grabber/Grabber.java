@@ -2,6 +2,8 @@ package ru.job4j.grabber;
 
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
+import ru.job4j.grabber.utils.DateTimeParser;
+import ru.job4j.grabber.utils.SqlRuDateTimeParser;
 import ru.job4j.html.Parse;
 import ru.job4j.html.SqlRuParse;
 
@@ -16,8 +18,9 @@ import static org.quartz.TriggerBuilder.newTrigger;
 public class Grabber implements Grab {
     private final Properties cfg = new Properties();
 
-    public Store store() {
-        return null;
+    public Store store() throws IOException {
+        cfg();
+        return new PsqlStore(cfg);
     }
 
     public Scheduler scheduler() throws SchedulerException {
@@ -71,10 +74,10 @@ public class Grabber implements Grab {
 
 
     public static void main(String[] args) throws Exception {
+        DateTimeParser dateTimeParser = new SqlRuDateTimeParser();
         Grabber grab = new Grabber();
-        grab.cfg();
         Scheduler scheduler = grab.scheduler();
         Store store = grab.store();
-        grab.init(new  SqlRuParse(), store, scheduler);
+        grab.init(new  SqlRuParse(dateTimeParser), store, scheduler);
     }
 }

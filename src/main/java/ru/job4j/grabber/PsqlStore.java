@@ -7,8 +7,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * класс работы с базой данных
+ *
+ */
 public class PsqlStore implements Store, AutoCloseable {
     private Connection connection;
+
+    public PsqlStore(Connection connection) {
+        this.connection = connection;
+    }
+
+    public PsqlStore(Properties cfg) {
+        try {
+            Class.forName(cfg.getProperty("driver-class-name"));
+            connection = DriverManager.getConnection(
+                    cfg.getProperty("url"),
+                    cfg.getProperty("username"),
+                    cfg.getProperty("password"));
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
     public Connection psqlStore(Properties cfg) {
         try (InputStream in = PsqlStore.class.getClassLoader()
@@ -98,11 +118,11 @@ public class PsqlStore implements Store, AutoCloseable {
     }
 
     public static void main(String[] args) {
-        PsqlStore psqlStore = new PsqlStore();
-        psqlStore.save(new Post("Name", "//-//-//", "http...", LocalDateTime.now()));
-        List<Post> list = psqlStore.getAll();
-        System.out.println(list);
-        Post post = psqlStore.findById(1);
-        System.out.println(post);
+//        PsqlStore psqlStore = new PsqlStore();
+//        psqlStore.save(new Post("Name", "//-//-//", "http...", LocalDateTime.now()));
+//        List<Post> list = psqlStore.getAll();
+//        System.out.println(list);
+//        Post post = psqlStore.findById(1);
+//        System.out.println(post);
     }
 }

@@ -18,9 +18,6 @@ import java.util.List;
 public class SqlRuParse implements Parse {
     private DateTimeParser dateTimeParser;
 
-    public SqlRuParse() {
-    }
-
     public SqlRuParse(DateTimeParser dateTimeParser) {
         this.dateTimeParser = dateTimeParser;
     }

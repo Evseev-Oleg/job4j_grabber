@@ -69,7 +69,7 @@ public class SqlRuParse implements Parse {
         for (Element td : row) {
             Element href = td.child(0);
             Post post = detail(href.attr("href"));
-            if(post.getTitle().contains("Java")) {
+            if (post.getTitle().contains("Java")) {
                 listPost.add(post);
             }
         }

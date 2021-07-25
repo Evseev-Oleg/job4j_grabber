@@ -18,8 +18,7 @@ import static org.quartz.TriggerBuilder.newTrigger;
 public class Grabber implements Grab {
     private final Properties cfg = new Properties();
 
-    public Store store() throws IOException {
-        cfg();
+    public Store store() {
         return new PsqlStore(cfg);
     }
 
@@ -76,6 +75,7 @@ public class Grabber implements Grab {
     public static void main(String[] args) throws Exception {
         DateTimeParser dateTimeParser = new SqlRuDateTimeParser();
         Grabber grab = new Grabber();
+        grab.cfg();
         Scheduler scheduler = grab.scheduler();
         Store store = grab.store();
         grab.init(new  SqlRuParse(dateTimeParser), store, scheduler);

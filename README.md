@@ -3,3 +3,4 @@
 [![codecov](https://codecov.io/gh/Evseev-Oleg/job4j_grabber/branch/master/graph/badge.svg?token=DJAWWS6R5Q)](https://codecov.io/gh/Evseev-Oleg/job4j_grabber)
 
 Обьединение зафиксированных изменений
+Вкурсе проводилась работа с ветками Git

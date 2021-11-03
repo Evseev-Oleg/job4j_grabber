@@ -118,11 +118,5 @@ public class PsqlStore implements Store, AutoCloseable {
     }
 
     public static void main(String[] args) {
-//        PsqlStore psqlStore = new PsqlStore();
-//        psqlStore.save(new Post("Name", "//-//-//", "http...", LocalDateTime.now()));
-//        List<Post> list = psqlStore.getAll();
-//        System.out.println(list);
-//        Post post = psqlStore.findById(1);
-//        System.out.println(post);
     }
 }
